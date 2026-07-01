@@ -16,6 +16,7 @@ main_menu() {
     echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo -e "${RED}ARISTA MATRIX PIPELINE${NC} : ${GREEN}https://github.com/aristapanell-cell/ARISTA-MATRIX-PIPELINE${NC}"
     echo -e "${RED}AristaPanel${NC} : ${GREEN}https://github.com/aristapanell-cell/AriataPanel${NC}"
+    echo -e "${RED}Telegram Channel${NC} : ${GREEN}@aristapanel${NC}"
     echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo -e "\n${GOLD}═══${NC} ${WHITE}[${GREEN}+${WHITE}]${NC} ${CYAN}Date:${NC} $(date '+%Y-%m-%d %H:%M:%S') ${GOLD}═══${NC}"
     echo -e "${GOLD}═══${NC} ${WHITE}[${GREEN}+${WHITE}]${NC} ${CYAN}System:${NC} $(uname -o 2>/dev/null || echo "Linux") ${GOLD}═══${NC}"
