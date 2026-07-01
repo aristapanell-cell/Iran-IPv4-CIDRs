@@ -29,7 +29,7 @@ else
 fi
 
 echo -e "\n${BLUE}[*] Installing dependencies...${NC}"
-pkg install -y python python-pip openssl-tool
+pkg install -y python python-pip
 
 echo -e "\n${BLUE}[*] Installing Python packages...${NC}"
 pip install aiohttp 2>/dev/null || echo "aiohttp already installed"
