@@ -149,111 +149,78 @@ class TLSProbe:
 class IPGenerator:
     def __init__(self):
         self.used_ips = set()
-        self.ranges = [
-            {'name': 'Cloudflare Main', 'cidr': '104.16.0.0/12', 'color': Colors.CYAN, 'priority': 1},
-            {'name': 'Cloudflare 2', 'cidr': '104.24.0.0/13', 'color': Colors.BLUE, 'priority': 2},
-            {'name': 'Cloudflare 3', 'cidr': '141.101.0.0/16', 'color': Colors.MAGENTA, 'priority': 3},
-            {'name': 'Cloudflare 4', 'cidr': '162.158.0.0/15', 'color': Colors.GREEN, 'priority': 4},
-            {'name': 'Cloudflare 5', 'cidr': '172.64.0.0/13', 'color': Colors.YELLOW, 'priority': 5},
-            {'name': 'AWS 1', 'cidr': '3.0.0.0/8', 'color': Colors.RED, 'priority': 6},
-            {'name': 'AWS 2', 'cidr': '13.0.0.0/8', 'color': Colors.CYAN, 'priority': 7},
-            {'name': 'AWS 3', 'cidr': '15.0.0.0/8', 'color': Colors.BLUE, 'priority': 8},
-            {'name': 'AWS 4', 'cidr': '16.0.0.0/8', 'color': Colors.MAGENTA, 'priority': 9},
-            {'name': 'AWS 5', 'cidr': '18.0.0.0/8', 'color': Colors.GREEN, 'priority': 10},
-            {'name': 'AWS 6', 'cidr': '34.0.0.0/8', 'color': Colors.YELLOW, 'priority': 11},
-            {'name': 'AWS 7', 'cidr': '35.0.0.0/8', 'color': Colors.RED, 'priority': 12},
-            {'name': 'AWS 8', 'cidr': '44.0.0.0/8', 'color': Colors.CYAN, 'priority': 13},
-            {'name': 'AWS 9', 'cidr': '50.0.0.0/8', 'color': Colors.BLUE, 'priority': 14},
-            {'name': 'AWS 10', 'cidr': '52.0.0.0/8', 'color': Colors.MAGENTA, 'priority': 15},
-            {'name': 'AWS 11', 'cidr': '54.0.0.0/8', 'color': Colors.GREEN, 'priority': 16},
-            {'name': 'AWS 12', 'cidr': '63.0.0.0/8', 'color': Colors.YELLOW, 'priority': 17},
-            {'name': 'Google 1', 'cidr': '8.0.0.0/8', 'color': Colors.RED, 'priority': 18},
-            {'name': 'Google 2', 'cidr': '23.0.0.0/8', 'color': Colors.CYAN, 'priority': 19},
-            {'name': 'Google 3', 'cidr': '34.0.0.0/8', 'color': Colors.BLUE, 'priority': 20},
-            {'name': 'Google 4', 'cidr': '35.0.0.0/8', 'color': Colors.MAGENTA, 'priority': 21},
-            {'name': 'Google 5', 'cidr': '36.0.0.0/8', 'color': Colors.GREEN, 'priority': 22},
-            {'name': 'Google 6', 'cidr': '37.0.0.0/8', 'color': Colors.YELLOW, 'priority': 23},
-            {'name': 'Google 7', 'cidr': '38.0.0.0/8', 'color': Colors.RED, 'priority': 24},
-            {'name': 'Azure 1', 'cidr': '13.0.0.0/8', 'color': Colors.CYAN, 'priority': 25},
-            {'name': 'Azure 2', 'cidr': '20.0.0.0/8', 'color': Colors.BLUE, 'priority': 26},
-            {'name': 'Azure 3', 'cidr': '23.0.0.0/8', 'color': Colors.MAGENTA, 'priority': 27},
-            {'name': 'Azure 4', 'cidr': '40.0.0.0/8', 'color': Colors.GREEN, 'priority': 28},
-            {'name': 'Azure 5', 'cidr': '51.0.0.0/8', 'color': Colors.YELLOW, 'priority': 29},
-            {'name': 'Azure 6', 'cidr': '52.0.0.0/8', 'color': Colors.RED, 'priority': 30},
-            {'name': 'Azure 7', 'cidr': '65.0.0.0/8', 'color': Colors.CYAN, 'priority': 31},
-            {'name': 'Azure 8', 'cidr': '70.0.0.0/8', 'color': Colors.BLUE, 'priority': 32},
-            {'name': 'DigitalOcean 1', 'cidr': '46.0.0.0/8', 'color': Colors.MAGENTA, 'priority': 33},
-            {'name': 'DigitalOcean 2', 'cidr': '50.0.0.0/8', 'color': Colors.GREEN, 'priority': 34},
-            {'name': 'DigitalOcean 3', 'cidr': '51.0.0.0/8', 'color': Colors.YELLOW, 'priority': 35},
-            {'name': 'DigitalOcean 4', 'cidr': '52.0.0.0/8', 'color': Colors.RED, 'priority': 36},
-            {'name': 'Oracle 1', 'cidr': '129.0.0.0/8', 'color': Colors.CYAN, 'priority': 37},
-            {'name': 'Oracle 2', 'cidr': '130.0.0.0/8', 'color': Colors.BLUE, 'priority': 38},
-            {'name': 'Oracle 3', 'cidr': '131.0.0.0/8', 'color': Colors.MAGENTA, 'priority': 39},
-            {'name': 'Oracle 4', 'cidr': '132.0.0.0/8', 'color': Colors.GREEN, 'priority': 40},
-            {'name': 'Vultr 1', 'cidr': '45.0.0.0/8', 'color': Colors.YELLOW, 'priority': 41},
-            {'name': 'Vultr 2', 'cidr': '64.0.0.0/8', 'color': Colors.RED, 'priority': 42},
-            {'name': 'Vultr 3', 'cidr': '65.0.0.0/8', 'color': Colors.CYAN, 'priority': 43},
-            {'name': 'Vultr 4', 'cidr': '66.0.0.0/8', 'color': Colors.BLUE, 'priority': 44}
+
+    def generate_cloudflare_ips(self, count: int = 200) -> List[str]:
+        ips = []
+        ranges = [
+            '104.16.0.0/12',
+            '104.24.0.0/13',
+            '141.101.0.0/16',
+            '162.158.0.0/15',
+            '172.64.0.0/13'
         ]
-
-    def _ip_to_int(self, ip: str) -> int:
-        return int(ipaddress.ip_address(ip))
-
-    def _int_to_ip(self, ip_int: int) -> str:
-        return str(ipaddress.ip_address(ip_int))
-
-    def generate_from_cidr(self, cidr: str, count: int = 100) -> List[str]:
-        ips = []
-        try:
-            network = ipaddress.ip_network(cidr, strict=False)
-            total_ips = network.num_addresses
-            if total_ips <= 1:
-                return ips
-            
-            start_ip = int(network.network_address)
-            end_ip = int(network.broadcast_address)
-            
-            attempts = 0
-            while len(ips) < count and attempts < count * 20:
-                attempts += 1
-                ip_int = random.randint(start_ip + 1, end_ip - 1)
-                ip = self._int_to_ip(ip_int)
-                if ip_int not in self.used_ips:
-                    self.used_ips.add(ip_int)
-                    ips.append(ip)
-        except Exception as e:
-            pass
-        return ips
-
-    def generate_from_range(self, start: str, end: str, count: int = 100) -> List[str]:
-        ips = []
-        try:
-            start_int = self._ip_to_int(start)
-            end_int = self._ip_to_int(end)
-            if start_int >= end_int:
-                return ips
-            attempts = 0
-            while len(ips) < count and attempts < count * 10:
-                attempts += 1
-                ip_int = random.randint(start_int, end_int)
-                ip = self._int_to_ip(ip_int)
-                if ip_int not in self.used_ips:
-                    self.used_ips.add(ip_int)
-                    ips.append(ip)
-        except:
-            pass
-        return ips
-
-    def generate(self, count: int = 100) -> List[str]:
-        ips = []
-        for r in self.ranges:
-            ips.extend(self.generate_from_cidr(r['cidr'], count // len(self.ranges) + 1))
+        for cidr in ranges:
+            try:
+                network = ipaddress.ip_network(cidr, strict=False)
+                start_ip = int(network.network_address)
+                end_ip = int(network.broadcast_address)
+                per_range = count // len(ranges)
+                for _ in range(per_range):
+                    ip_int = random.randint(start_ip + 1, end_ip - 1)
+                    ip = str(ipaddress.ip_address(ip_int))
+                    if ip_int not in self.used_ips:
+                        self.used_ips.add(ip_int)
+                        ips.append(ip)
+            except:
+                pass
         return ips[:count]
 
-    def get_range_by_index(self, index: int) -> Optional[Dict]:
-        if 0 <= index < len(self.ranges):
-            return self.ranges[index]
-        return None
+    def generate_aws_ips(self, count: int = 200) -> List[str]:
+        ips = []
+        ranges = [
+            '3.0.0.0/8', '13.0.0.0/8', '15.0.0.0/8',
+            '16.0.0.0/8', '18.0.0.0/8', '34.0.0.0/8',
+            '35.0.0.0/8', '44.0.0.0/8', '50.0.0.0/8',
+            '52.0.0.0/8', '54.0.0.0/8', '63.0.0.0/8'
+        ]
+        for cidr in ranges:
+            try:
+                network = ipaddress.ip_network(cidr, strict=False)
+                start_ip = int(network.network_address)
+                end_ip = int(network.broadcast_address)
+                per_range = count // len(ranges)
+                for _ in range(per_range):
+                    ip_int = random.randint(start_ip + 1, end_ip - 1)
+                    ip = str(ipaddress.ip_address(ip_int))
+                    if ip_int not in self.used_ips:
+                        self.used_ips.add(ip_int)
+                        ips.append(ip)
+            except:
+                pass
+        return ips[:count]
+
+    def generate_google_ips(self, count: int = 200) -> List[str]:
+        ips = []
+        ranges = [
+            '8.0.0.0/8', '23.0.0.0/8', '34.0.0.0/8',
+            '35.0.0.0/8', '36.0.0.0/8', '37.0.0.0/8',
+            '38.0.0.0/8'
+        ]
+        for cidr in ranges:
+            try:
+                network = ipaddress.ip_network(cidr, strict=False)
+                start_ip = int(network.network_address)
+                end_ip = int(network.broadcast_address)
+                per_range = count // len(ranges)
+                for _ in range(per_range):
+                    ip_int = random.randint(start_ip + 1, end_ip - 1)
+                    ip = str(ipaddress.ip_address(ip_int))
+                    if ip_int not in self.used_ips:
+                        self.used_ips.add(ip_int)
+                        ips.append(ip)
+            except:
+                pass
+        return ips[:count]
 
 class AristaScanner:
     def __init__(self, max_concurrent: int = 500, timeout: int = 1):
@@ -312,24 +279,14 @@ class AristaScanner:
 
     def print_menu(self):
         print(f"\n{Colors.CYAN}╔══════════════════════════════════════════════════════════╗")
-        print(f"║              Arista Scanner - Select Range            ║")
+        print(f"║              Arista Scanner - Quick Scan              ║")
         print(f"╚══════════════════════════════════════════════════════════╝{Colors.RESET}")
-        print(f"\n{Colors.DIM}Select a range to scan:{Colors.RESET}\n")
-        
-        ranges = self.ip_gen.ranges
-        for i, r in enumerate(ranges, 1):
-            color = r['color']
-            num = f"{i:02d}"
-            priority_star = "⭐ " if r.get('priority', 0) <= 5 else "   "
-            print(f"  {color}{num}{Colors.RESET}. {priority_star}{color}{r['name']}{Colors.RESET} {Colors.DIM}({r['cidr']}){Colors.RESET}")
-            if i % 10 == 0 and i < len(ranges):
-                print()
-        
-        print(f"\n  {Colors.RED}00{Colors.RESET}. {Colors.RED}Exit{Colors.RESET}")
-        print(f"\n{Colors.GREEN}╔══════════════════════════════════════════════════════════╗")
-        print(f"║  {Colors.DIM}Enter number (01-44) to select range or 00 to exit{Colors.GREEN}  ║")
-        print(f"║  {Colors.DIM}⭐ = Recommended ranges (Cloudflare){Colors.GREEN}              ║")
-        print(f"╚══════════════════════════════════════════════════════════╝{Colors.RESET}")
+        print(f"\n{Colors.GREEN}1.{Colors.RESET} Scan Cloudflare IPs {Colors.DIM}(Recommended){Colors.RESET}")
+        print(f"{Colors.GREEN}2.{Colors.RESET} Scan AWS IPs")
+        print(f"{Colors.GREEN}3.{Colors.RESET} Scan Google IPs")
+        print(f"{Colors.GREEN}4.{Colors.RESET} Custom Count")
+        print(f"\n{Colors.RED}0.{Colors.RESET} Exit")
+        print()
 
     def print_scan_menu(self):
         print(f"\n{Colors.CYAN}╔══════════════════════════════════════════════════════════╗")
@@ -340,7 +297,7 @@ class AristaScanner:
         print(f"{Colors.GREEN}3.{Colors.RESET} Deep Scan {Colors.DIM}(500 IPs){Colors.RESET}")
         print(f"{Colors.GREEN}4.{Colors.RESET} Extreme Scan {Colors.DIM}(1000 IPs){Colors.RESET}")
         print(f"{Colors.GREEN}5.{Colors.RESET} Custom Count")
-        print(f"\n{Colors.RED}0.{Colors.RESET} Back to Range Selection")
+        print(f"\n{Colors.RED}0.{Colors.RESET} Back")
         print()
 
     async def scan(self, ips: List[str], port: int = 443, show_progress: bool = True):
@@ -424,89 +381,100 @@ class AristaScanner:
                 )
             print(f"\n{Colors.GREEN}✓ Copy the IPs above{Colors.RESET}")
         else:
-            print(f"\n{Colors.YELLOW}⚠ No alive IPs found in this range.{Colors.RESET}")
-            print(f"{Colors.DIM}Try increasing the number of IPs or selecting a different range.{Colors.RESET}")
+            print(f"\n{Colors.YELLOW}⚠ No alive IPs found.{Colors.RESET}")
+            print(f"{Colors.DIM}Try increasing the number of IPs or selecting a different provider.{Colors.RESET}")
 
 async def main():
     import argparse
     
     parser = argparse.ArgumentParser(description='Arista Scanner')
-    parser.add_argument('--range', '-r', type=int, help='Range number to scan')
-    parser.add_argument('--count', '-n', type=int, default=100, help='Number of IPs to scan')
+    parser.add_argument('--count', '-n', type=int, default=200, help='Number of IPs to scan')
     parser.add_argument('--port', '-p', type=int, default=443, help='Port to scan')
     parser.add_argument('--concurrent', '-C', type=int, default=500, help='Max concurrent connections')
     parser.add_argument('--timeout', '-t', type=float, default=1.5, help='Timeout in seconds')
     parser.add_argument('--quiet', '-q', action='store_true', help='Quiet mode')
+    parser.add_argument('--cloudflare', action='store_true', help='Scan Cloudflare IPs')
+    parser.add_argument('--aws', action='store_true', help='Scan AWS IPs')
+    parser.add_argument('--google', action='store_true', help='Scan Google IPs')
     
     args = parser.parse_args()
     
     scanner = AristaScanner(max_concurrent=args.concurrent, timeout=args.timeout)
     
-    if args.range is not None:
-        r = scanner.ip_gen.get_range_by_index(args.range - 1)
-        if r:
-            ips = scanner.ip_gen.generate_from_cidr(r['cidr'], args.count)
-            if ips:
-                await scanner.scan(ips, port=args.port, show_progress=not args.quiet)
+    if args.cloudflare:
+        ips = scanner.ip_gen.generate_cloudflare_ips(args.count)
+        if ips:
+            await scanner.scan(ips, port=args.port, show_progress=not args.quiet)
+        return
+    elif args.aws:
+        ips = scanner.ip_gen.generate_aws_ips(args.count)
+        if ips:
+            await scanner.scan(ips, port=args.port, show_progress=not args.quiet)
+        return
+    elif args.google:
+        ips = scanner.ip_gen.generate_google_ips(args.count)
+        if ips:
+            await scanner.scan(ips, port=args.port, show_progress=not args.quiet)
         return
     
     while True:
         scanner.print_menu()
         choice = input(f"\n{Colors.BLUE}Enter your choice: {Colors.RESET}").strip()
         
-        if choice == "00" or choice == "0":
+        if choice == "0":
             print(f"\n{Colors.GREEN}Goodbye!{Colors.RESET}")
             break
         
-        try:
-            idx = int(choice) - 1
-            r = scanner.ip_gen.get_range_by_index(idx)
-            if not r:
-                print(f"{Colors.RED}Invalid range number!{Colors.RESET}")
+        provider_choice = choice
+        ips = []
+        
+        if provider_choice == "1":
+            ips = scanner.ip_gen.generate_cloudflare_ips(200)
+            provider_name = "Cloudflare"
+        elif provider_choice == "2":
+            ips = scanner.ip_gen.generate_aws_ips(200)
+            provider_name = "AWS"
+        elif provider_choice == "3":
+            ips = scanner.ip_gen.generate_google_ips(200)
+            provider_name = "Google"
+        elif provider_choice == "4":
+            count_input = input(f"{Colors.BLUE}Enter number of IPs to scan: {Colors.RESET}")
+            try:
+                count = int(count_input)
+                if count <= 0:
+                    print(f"{Colors.RED}Count must be positive!{Colors.RESET}")
+                    continue
+            except:
+                print(f"{Colors.RED}Invalid number!{Colors.RESET}")
                 continue
             
-            print(f"\n{Colors.GREEN}Selected: {r['name']} ({r['cidr']}){Colors.RESET}")
+            print(f"\n{Colors.CYAN}Select provider:{Colors.RESET}")
+            print(f"{Colors.GREEN}1.{Colors.RESET} Cloudflare")
+            print(f"{Colors.GREEN}2.{Colors.RESET} AWS")
+            print(f"{Colors.GREEN}3.{Colors.RESET} Google")
+            prov = input(f"{Colors.BLUE}Choose: {Colors.RESET}").strip()
             
-            while True:
-                scanner.print_scan_menu()
-                scan_choice = input(f"{Colors.BLUE}Choose scan type: {Colors.RESET}").strip()
-                
-                if scan_choice == "0":
-                    break
-                
-                count_map = {
-                    "1": 50,
-                    "2": 100,
-                    "3": 500,
-                    "4": 1000
-                }
-                
-                if scan_choice in count_map:
-                    count = count_map[scan_choice]
-                elif scan_choice == "5":
-                    count_input = input(f"{Colors.BLUE}Enter number of IPs to scan: {Colors.RESET}")
-                    try:
-                        count = int(count_input)
-                        if count <= 0:
-                            print(f"{Colors.RED}Count must be positive!{Colors.RESET}")
-                            continue
-                    except:
-                        print(f"{Colors.RED}Invalid number!{Colors.RESET}")
-                        continue
-                else:
-                    print(f"{Colors.RED}Invalid choice!{Colors.RESET}")
-                    continue
-                
-                ips = scanner.ip_gen.generate_from_cidr(r['cidr'], count)
-                if ips:
-                    await scanner.scan(ips, port=args.port, show_progress=not args.quiet)
-                else:
-                    print(f"{Colors.RED}No IPs generated!{Colors.RESET}")
-                
-                break
-                
-        except ValueError:
-            print(f"{Colors.RED}Invalid input! Please enter a number.{Colors.RESET}")
+            if prov == "1":
+                ips = scanner.ip_gen.generate_cloudflare_ips(count)
+                provider_name = "Cloudflare"
+            elif prov == "2":
+                ips = scanner.ip_gen.generate_aws_ips(count)
+                provider_name = "AWS"
+            elif prov == "3":
+                ips = scanner.ip_gen.generate_google_ips(count)
+                provider_name = "Google"
+            else:
+                print(f"{Colors.RED}Invalid provider!{Colors.RESET}")
+                continue
+        else:
+            print(f"{Colors.RED}Invalid choice!{Colors.RESET}")
+            continue
+        
+        if ips:
+            print(f"\n{Colors.GREEN}Selected: {provider_name}{Colors.RESET}")
+            await scanner.scan(ips, port=args.port, show_progress=not args.quiet)
+        else:
+            print(f"{Colors.RED}No IPs generated!{Colors.RESET}")
 
 if __name__ == '__main__':
     try:
