@@ -150,50 +150,50 @@ class IPGenerator:
     def __init__(self):
         self.used_ips = set()
         self.ranges = [
-            {'name': 'Cloudflare', 'cidr': '104.16.0.0/12', 'color': Colors.CYAN},
-            {'name': 'Cloudflare 2', 'cidr': '104.24.0.0/13', 'color': Colors.BLUE},
-            {'name': 'Cloudflare 3', 'cidr': '141.101.0.0/16', 'color': Colors.MAGENTA},
-            {'name': 'Cloudflare 4', 'cidr': '162.158.0.0/15', 'color': Colors.GREEN},
-            {'name': 'Cloudflare 5', 'cidr': '172.64.0.0/13', 'color': Colors.YELLOW},
-            {'name': 'AWS 1', 'cidr': '3.0.0.0/8', 'color': Colors.RED},
-            {'name': 'AWS 2', 'cidr': '13.0.0.0/8', 'color': Colors.CYAN},
-            {'name': 'AWS 3', 'cidr': '15.0.0.0/8', 'color': Colors.BLUE},
-            {'name': 'AWS 4', 'cidr': '16.0.0.0/8', 'color': Colors.MAGENTA},
-            {'name': 'AWS 5', 'cidr': '18.0.0.0/8', 'color': Colors.GREEN},
-            {'name': 'AWS 6', 'cidr': '34.0.0.0/8', 'color': Colors.YELLOW},
-            {'name': 'AWS 7', 'cidr': '35.0.0.0/8', 'color': Colors.RED},
-            {'name': 'AWS 8', 'cidr': '44.0.0.0/8', 'color': Colors.CYAN},
-            {'name': 'AWS 9', 'cidr': '50.0.0.0/8', 'color': Colors.BLUE},
-            {'name': 'AWS 10', 'cidr': '52.0.0.0/8', 'color': Colors.MAGENTA},
-            {'name': 'AWS 11', 'cidr': '54.0.0.0/8', 'color': Colors.GREEN},
-            {'name': 'AWS 12', 'cidr': '63.0.0.0/8', 'color': Colors.YELLOW},
-            {'name': 'Google 1', 'cidr': '8.0.0.0/8', 'color': Colors.RED},
-            {'name': 'Google 2', 'cidr': '23.0.0.0/8', 'color': Colors.CYAN},
-            {'name': 'Google 3', 'cidr': '34.0.0.0/8', 'color': Colors.BLUE},
-            {'name': 'Google 4', 'cidr': '35.0.0.0/8', 'color': Colors.MAGENTA},
-            {'name': 'Google 5', 'cidr': '36.0.0.0/8', 'color': Colors.GREEN},
-            {'name': 'Google 6', 'cidr': '37.0.0.0/8', 'color': Colors.YELLOW},
-            {'name': 'Google 7', 'cidr': '38.0.0.0/8', 'color': Colors.RED},
-            {'name': 'Azure 1', 'cidr': '13.0.0.0/8', 'color': Colors.CYAN},
-            {'name': 'Azure 2', 'cidr': '20.0.0.0/8', 'color': Colors.BLUE},
-            {'name': 'Azure 3', 'cidr': '23.0.0.0/8', 'color': Colors.MAGENTA},
-            {'name': 'Azure 4', 'cidr': '40.0.0.0/8', 'color': Colors.GREEN},
-            {'name': 'Azure 5', 'cidr': '51.0.0.0/8', 'color': Colors.YELLOW},
-            {'name': 'Azure 6', 'cidr': '52.0.0.0/8', 'color': Colors.RED},
-            {'name': 'Azure 7', 'cidr': '65.0.0.0/8', 'color': Colors.CYAN},
-            {'name': 'Azure 8', 'cidr': '70.0.0.0/8', 'color': Colors.BLUE},
-            {'name': 'DigitalOcean 1', 'cidr': '46.0.0.0/8', 'color': Colors.MAGENTA},
-            {'name': 'DigitalOcean 2', 'cidr': '50.0.0.0/8', 'color': Colors.GREEN},
-            {'name': 'DigitalOcean 3', 'cidr': '51.0.0.0/8', 'color': Colors.YELLOW},
-            {'name': 'DigitalOcean 4', 'cidr': '52.0.0.0/8', 'color': Colors.RED},
-            {'name': 'Oracle 1', 'cidr': '129.0.0.0/8', 'color': Colors.CYAN},
-            {'name': 'Oracle 2', 'cidr': '130.0.0.0/8', 'color': Colors.BLUE},
-            {'name': 'Oracle 3', 'cidr': '131.0.0.0/8', 'color': Colors.MAGENTA},
-            {'name': 'Oracle 4', 'cidr': '132.0.0.0/8', 'color': Colors.GREEN},
-            {'name': 'Vultr 1', 'cidr': '45.0.0.0/8', 'color': Colors.YELLOW},
-            {'name': 'Vultr 2', 'cidr': '64.0.0.0/8', 'color': Colors.RED},
-            {'name': 'Vultr 3', 'cidr': '65.0.0.0/8', 'color': Colors.CYAN},
-            {'name': 'Vultr 4', 'cidr': '66.0.0.0/8', 'color': Colors.BLUE}
+            {'name': 'Cloudflare Main', 'cidr': '104.16.0.0/12', 'color': Colors.CYAN, 'priority': 1},
+            {'name': 'Cloudflare 2', 'cidr': '104.24.0.0/13', 'color': Colors.BLUE, 'priority': 2},
+            {'name': 'Cloudflare 3', 'cidr': '141.101.0.0/16', 'color': Colors.MAGENTA, 'priority': 3},
+            {'name': 'Cloudflare 4', 'cidr': '162.158.0.0/15', 'color': Colors.GREEN, 'priority': 4},
+            {'name': 'Cloudflare 5', 'cidr': '172.64.0.0/13', 'color': Colors.YELLOW, 'priority': 5},
+            {'name': 'AWS 1', 'cidr': '3.0.0.0/8', 'color': Colors.RED, 'priority': 6},
+            {'name': 'AWS 2', 'cidr': '13.0.0.0/8', 'color': Colors.CYAN, 'priority': 7},
+            {'name': 'AWS 3', 'cidr': '15.0.0.0/8', 'color': Colors.BLUE, 'priority': 8},
+            {'name': 'AWS 4', 'cidr': '16.0.0.0/8', 'color': Colors.MAGENTA, 'priority': 9},
+            {'name': 'AWS 5', 'cidr': '18.0.0.0/8', 'color': Colors.GREEN, 'priority': 10},
+            {'name': 'AWS 6', 'cidr': '34.0.0.0/8', 'color': Colors.YELLOW, 'priority': 11},
+            {'name': 'AWS 7', 'cidr': '35.0.0.0/8', 'color': Colors.RED, 'priority': 12},
+            {'name': 'AWS 8', 'cidr': '44.0.0.0/8', 'color': Colors.CYAN, 'priority': 13},
+            {'name': 'AWS 9', 'cidr': '50.0.0.0/8', 'color': Colors.BLUE, 'priority': 14},
+            {'name': 'AWS 10', 'cidr': '52.0.0.0/8', 'color': Colors.MAGENTA, 'priority': 15},
+            {'name': 'AWS 11', 'cidr': '54.0.0.0/8', 'color': Colors.GREEN, 'priority': 16},
+            {'name': 'AWS 12', 'cidr': '63.0.0.0/8', 'color': Colors.YELLOW, 'priority': 17},
+            {'name': 'Google 1', 'cidr': '8.0.0.0/8', 'color': Colors.RED, 'priority': 18},
+            {'name': 'Google 2', 'cidr': '23.0.0.0/8', 'color': Colors.CYAN, 'priority': 19},
+            {'name': 'Google 3', 'cidr': '34.0.0.0/8', 'color': Colors.BLUE, 'priority': 20},
+            {'name': 'Google 4', 'cidr': '35.0.0.0/8', 'color': Colors.MAGENTA, 'priority': 21},
+            {'name': 'Google 5', 'cidr': '36.0.0.0/8', 'color': Colors.GREEN, 'priority': 22},
+            {'name': 'Google 6', 'cidr': '37.0.0.0/8', 'color': Colors.YELLOW, 'priority': 23},
+            {'name': 'Google 7', 'cidr': '38.0.0.0/8', 'color': Colors.RED, 'priority': 24},
+            {'name': 'Azure 1', 'cidr': '13.0.0.0/8', 'color': Colors.CYAN, 'priority': 25},
+            {'name': 'Azure 2', 'cidr': '20.0.0.0/8', 'color': Colors.BLUE, 'priority': 26},
+            {'name': 'Azure 3', 'cidr': '23.0.0.0/8', 'color': Colors.MAGENTA, 'priority': 27},
+            {'name': 'Azure 4', 'cidr': '40.0.0.0/8', 'color': Colors.GREEN, 'priority': 28},
+            {'name': 'Azure 5', 'cidr': '51.0.0.0/8', 'color': Colors.YELLOW, 'priority': 29},
+            {'name': 'Azure 6', 'cidr': '52.0.0.0/8', 'color': Colors.RED, 'priority': 30},
+            {'name': 'Azure 7', 'cidr': '65.0.0.0/8', 'color': Colors.CYAN, 'priority': 31},
+            {'name': 'Azure 8', 'cidr': '70.0.0.0/8', 'color': Colors.BLUE, 'priority': 32},
+            {'name': 'DigitalOcean 1', 'cidr': '46.0.0.0/8', 'color': Colors.MAGENTA, 'priority': 33},
+            {'name': 'DigitalOcean 2', 'cidr': '50.0.0.0/8', 'color': Colors.GREEN, 'priority': 34},
+            {'name': 'DigitalOcean 3', 'cidr': '51.0.0.0/8', 'color': Colors.YELLOW, 'priority': 35},
+            {'name': 'DigitalOcean 4', 'cidr': '52.0.0.0/8', 'color': Colors.RED, 'priority': 36},
+            {'name': 'Oracle 1', 'cidr': '129.0.0.0/8', 'color': Colors.CYAN, 'priority': 37},
+            {'name': 'Oracle 2', 'cidr': '130.0.0.0/8', 'color': Colors.BLUE, 'priority': 38},
+            {'name': 'Oracle 3', 'cidr': '131.0.0.0/8', 'color': Colors.MAGENTA, 'priority': 39},
+            {'name': 'Oracle 4', 'cidr': '132.0.0.0/8', 'color': Colors.GREEN, 'priority': 40},
+            {'name': 'Vultr 1', 'cidr': '45.0.0.0/8', 'color': Colors.YELLOW, 'priority': 41},
+            {'name': 'Vultr 2', 'cidr': '64.0.0.0/8', 'color': Colors.RED, 'priority': 42},
+            {'name': 'Vultr 3', 'cidr': '65.0.0.0/8', 'color': Colors.CYAN, 'priority': 43},
+            {'name': 'Vultr 4', 'cidr': '66.0.0.0/8', 'color': Colors.BLUE, 'priority': 44}
         ]
 
     def _ip_to_int(self, ip: str) -> int:
@@ -206,17 +206,22 @@ class IPGenerator:
         ips = []
         try:
             network = ipaddress.ip_network(cidr, strict=False)
+            total_ips = network.num_addresses
+            if total_ips <= 1:
+                return ips
+            
+            start_ip = int(network.network_address)
+            end_ip = int(network.broadcast_address)
+            
             attempts = 0
-            while len(ips) < count and attempts < count * 10:
+            while len(ips) < count and attempts < count * 20:
                 attempts += 1
-                if network.num_addresses > 1:
-                    offset = random.randint(1, min(network.num_addresses - 1, 65535))
-                    ip_int = int(network.network_address) + offset
-                    ip = str(ipaddress.ip_address(ip_int))
-                    if ip_int not in self.used_ips:
-                        self.used_ips.add(ip_int)
-                        ips.append(ip)
-        except:
+                ip_int = random.randint(start_ip + 1, end_ip - 1)
+                ip = self._int_to_ip(ip_int)
+                if ip_int not in self.used_ips:
+                    self.used_ips.add(ip_int)
+                    ips.append(ip)
+        except Exception as e:
             pass
         return ips
 
@@ -315,13 +320,15 @@ class AristaScanner:
         for i, r in enumerate(ranges, 1):
             color = r['color']
             num = f"{i:02d}"
-            print(f"  {color}{num}{Colors.RESET}. {color}{r['name']}{Colors.RESET} {Colors.DIM}({r['cidr']}){Colors.RESET}")
+            priority_star = "⭐ " if r.get('priority', 0) <= 5 else "   "
+            print(f"  {color}{num}{Colors.RESET}. {priority_star}{color}{r['name']}{Colors.RESET} {Colors.DIM}({r['cidr']}){Colors.RESET}")
             if i % 10 == 0 and i < len(ranges):
                 print()
         
         print(f"\n  {Colors.RED}00{Colors.RESET}. {Colors.RED}Exit{Colors.RESET}")
         print(f"\n{Colors.GREEN}╔══════════════════════════════════════════════════════════╗")
         print(f"║  {Colors.DIM}Enter number (01-44) to select range or 00 to exit{Colors.GREEN}  ║")
+        print(f"║  {Colors.DIM}⭐ = Recommended ranges (Cloudflare){Colors.GREEN}              ║")
         print(f"╚══════════════════════════════════════════════════════════╝{Colors.RESET}")
 
     def print_scan_menu(self):
@@ -416,6 +423,9 @@ class AristaScanner:
                     f"{r.http_status}"
                 )
             print(f"\n{Colors.GREEN}✓ Copy the IPs above{Colors.RESET}")
+        else:
+            print(f"\n{Colors.YELLOW}⚠ No alive IPs found in this range.{Colors.RESET}")
+            print(f"{Colors.DIM}Try increasing the number of IPs or selecting a different range.{Colors.RESET}")
 
 async def main():
     import argparse
