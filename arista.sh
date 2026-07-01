@@ -35,69 +35,111 @@ read -r user_input
 
 if [ "$user_input" -eq 1 ]; then
     echo -e "\n${GOLD}═══${NC} ${WHITE}[${GREEN}+${WHITE}]${NC} ${CYAN}Scanning IPv4 addresses...${NC} ${GOLD}═══${NC}"
-    ip_list=$(echo "1" | bash <(curl -fsSL https://raw.githubusercontent.com/Ptechgithub/warp/main/endip/install.sh) 2>/dev/null | grep -oP '(\d{1,3}\.){3}\d{1,3}:\d+')
+    
+    # دریافت لیست آیپی‌ها
+    temp_file=$(mktemp)
+    echo "1" | bash <(curl -fsSL https://raw.githubusercontent.com/Ptechgithub/warp/main/endip/install.sh) 2>/dev/null | grep -oP '(\d{1,3}\.){3}\d{1,3}:\d+' > "$temp_file"
+    
     clear
-    if [ -z "$ip_list" ]; then
+    
+    if [ ! -s "$temp_file" ]; then
         echo -e "\n${GOLD}═══${NC} ${WHITE}[${RED}!${WHITE}]${NC} ${RED}No IPv4 addresses found!${NC} ${GOLD}═══${NC}"
     else
         echo -e "\n${WHITE}TOP 20 IPv4 ADDRESSES${NC}"
         echo -e "${BLUE}────────────────────────────────────────${NC}"
-        idx=0
-        echo "$ip_list" | head -n 20 | while read -r ip_port; do
-            idx=$((idx+1))
+        
+        count=0
+        while IFS= read -r ip_port; do
+            count=$((count+1))
+            if [ $count -gt 20 ]; then
+                break
+            fi
+            
             ip=$(echo "$ip_port" | cut -d: -f1)
-            latency=$(ping -c 1 -W 1 $ip 2>/dev/null | grep 'time=' | awk -F'time=' '{ print $2 }' | cut -d' ' -f1)
+            
+            # پینگ با timeout کمتر
+            latency=$(ping -c 1 -W 1 $ip 2>/dev/null | grep 'time=' | head -1 | sed 's/.*time=//' | cut -d' ' -f1)
+            
             if [ -z "$latency" ]; then
                 latency="N/A"
                 status="${RED}DOWN${NC}"
-            elif [ "$latency" -lt 100 ] 2>/dev/null; then
+            elif [ "$(echo "$latency < 100" | bc 2>/dev/null)" = "1" ]; then
                 status="${GREEN}FAST${NC}"
-            elif [ "$latency" -lt 200 ] 2>/dev/null; then
+            elif [ "$(echo "$latency < 200" | bc 2>/dev/null)" = "1" ]; then
                 status="${YELLOW}GOOD${NC}"
             else
                 status="${RED}SLOW${NC}"
             fi
-            printf "  %2d.  %-20s  %-5s  %s\n" "$idx" "$ip_port" "$latency" "$status"
-        done
+            
+            # نمایش با echo ساده به جای printf
+            echo -e "  $count.  $ip_port  ${CYAN}$latency${NC}  $status"
+            
+        done < "$temp_file"
+        
         echo -e "${BLUE}────────────────────────────────────────${NC}"
+        echo -e "${WHITE}Total: $count IP addresses found${NC}"
     fi
+    
+    rm -f "$temp_file"
     echo -e "\n${GOLD}═══${NC} ${WHITE}[${CYAN}i${WHITE}]${NC} ${WHITE}Press Enter to continue...${NC} ${GOLD}═══${NC}"
     read
     exec "$0"
+    
 elif [ "$user_input" -eq 2 ]; then
     echo -e "\n${GOLD}═══${NC} ${WHITE}[${GREEN}+${WHITE}]${NC} ${CYAN}Scanning IPv6 addresses...${NC} ${GOLD}═══${NC}"
-    ip_list=$(echo "2" | bash <(curl -fsSL https://raw.githubusercontent.com/Ptechgithub/warp/main/endip/install.sh) 2>/dev/null | grep -oP '(\[?[a-fA-F\d:]+\]?\:\d+)')
+    
+    # دریافت لیست آیپی‌ها
+    temp_file=$(mktemp)
+    echo "2" | bash <(curl -fsSL https://raw.githubusercontent.com/Ptechgithub/warp/main/endip/install.sh) 2>/dev/null | grep -oP '(\[?[a-fA-F\d:]+\]?\:\d+)' > "$temp_file"
+    
     clear
-    if [ -z "$ip_list" ]; then
+    
+    if [ ! -s "$temp_file" ]; then
         echo -e "\n${GOLD}═══${NC} ${WHITE}[${RED}!${WHITE}]${NC} ${RED}No IPv6 addresses found!${NC} ${GOLD}═══${NC}"
     else
         echo -e "\n${WHITE}TOP 20 IPv6 ADDRESSES${NC}"
         echo -e "${BLUE}─────────────────────────────────────────────────────${NC}"
-        idx=0
-        echo "$ip_list" | head -n 20 | while read -r ip_port; do
-            idx=$((idx+1))
+        
+        count=0
+        while IFS= read -r ip_port; do
+            count=$((count+1))
+            if [ $count -gt 20 ]; then
+                break
+            fi
+            
             ip=$(echo "$ip_port" | cut -d'[' -f2 | cut -d']' -f1)
             if [ -z "$ip" ]; then
                 ip=$(echo "$ip_port" | cut -d: -f1)
             fi
-            latency=$(ping6 -c 1 -W 1 $ip 2>/dev/null | grep 'time=' | awk -F'time=' '{ print $2 }' | cut -d' ' -f1)
+            
+            # پینگ با timeout کمتر
+            latency=$(ping6 -c 1 -W 1 $ip 2>/dev/null | grep 'time=' | head -1 | sed 's/.*time=//' | cut -d' ' -f1)
+            
             if [ -z "$latency" ]; then
                 latency="N/A"
                 status="${RED}DOWN${NC}"
-            elif [ "$latency" -lt 100 ] 2>/dev/null; then
+            elif [ "$(echo "$latency < 100" | bc 2>/dev/null)" = "1" ]; then
                 status="${GREEN}FAST${NC}"
-            elif [ "$latency" -lt 200 ] 2>/dev/null; then
+            elif [ "$(echo "$latency < 200" | bc 2>/dev/null)" = "1" ]; then
                 status="${YELLOW}GOOD${NC}"
             else
                 status="${RED}SLOW${NC}"
             fi
-            printf "  %2d.  %-35s  %-5s  %s\n" "$idx" "$ip_port" "$latency" "$status"
-        done
+            
+            # نمایش با echo ساده
+            echo -e "  $count.  $ip_port  ${CYAN}$latency${NC}  $status"
+            
+        done < "$temp_file"
+        
         echo -e "${BLUE}─────────────────────────────────────────────────────${NC}"
+        echo -e "${WHITE}Total: $count IP addresses found${NC}"
     fi
+    
+    rm -f "$temp_file"
     echo -e "\n${GOLD}═══${NC} ${WHITE}[${CYAN}i${WHITE}]${NC} ${WHITE}Press Enter to continue...${NC} ${GOLD}═══${NC}"
     read
     exec "$0"
+    
 elif [ "$user_input" -eq 0 ]; then
     echo -e "\n${GOLD}═══${NC} ${WHITE}[${GREEN}+${WHITE}]${NC} ${GREEN}Goodbye!${NC} ${GOLD}═══${NC}"
     exit 0
