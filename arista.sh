@@ -39,7 +39,8 @@ display_table() {
 
 scan_ipv4() {
     echo -e "${CYAN}Fetching IPv4 addresses...${NC}"
-    ip_list=$(curl -sL https://raw.githubusercontent.com/Ptechgithub/warp/main/endip/install.sh 2>/dev/null | bash 2>/dev/null | grep -oP '(\d{1,3}\.){3}\d{1,3}:\d+')
+    # استفاده از grep ساده به جای grep -P
+    ip_list=$(curl -sL https://raw.githubusercontent.com/Ptechgithub/warp/main/endip/install.sh 2>/dev/null | bash 2>/dev/null | grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}:[0-9]+')
     
     if [ -z "$ip_list" ]; then
         echo -e "${RED}No IPs found!${NC}"
@@ -53,7 +54,8 @@ scan_ipv4() {
 
 scan_ipv6() {
     echo -e "${CYAN}Fetching IPv6 addresses...${NC}"
-    ip_list=$(curl -sL https://raw.githubusercontent.com/Ptechgithub/warp/main/endip/install.sh 2>/dev/null | bash 2>/dev/null | grep -oP '(\[?[a-fA-F\d:]+\]?\:\d+)')
+    # استفاده از grep ساده به جای grep -P
+    ip_list=$(curl -sL https://raw.githubusercontent.com/Ptechgithub/warp/main/endip/install.sh 2>/dev/null | bash 2>/dev/null | grep -oE '\[?([a-fA-F0-9:]+)\]?:[0-9]+')
     
     if [ -z "$ip_list" ]; then
         echo -e "${RED}No IPv6 addresses found!${NC}"
@@ -67,6 +69,9 @@ scan_ipv6() {
     printf "+---------------------------------------------+------------+\n"
     echo "$ip_list" | head -n 10 | while read -r ip_port; do
         ip=$(echo $ip_port | cut -d'[' -f2 | cut -d']' -f1)
+        if [ -z "$ip" ]; then
+            ip=$(echo $ip_port | cut -d: -f1)
+        fi
         latency=$(ping6 -c 1 -W 1 $ip 2>/dev/null | grep 'time=' | awk -F'time=' '{ print $2 }' | cut -d' ' -f1)
         if [ -z "$latency" ]; then
             latency="N/A"
