@@ -1,3 +1,5 @@
+#!/bin/bash
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -30,8 +32,7 @@ echo -e "\n${BLUE}[*] Installing dependencies...${NC}"
 pkg install -y python python-pip openssl-tool
 
 echo -e "\n${BLUE}[*] Installing Python packages...${NC}"
-pip install --upgrade pip
-pip install aiohttp
+pip install aiohttp 2>/dev/null || echo "aiohttp already installed"
 
 echo -e "\n${BLUE}[*] Downloading project...${NC}"
 cd ~
@@ -46,6 +47,6 @@ ln -sf ~/arista-scanner/arista ~/../usr/bin/arista 2>/dev/null || echo "Symlink 
 echo -e "\n${GREEN}✅ Installation Complete!${NC}"
 echo -e "\n${CYAN}📦 Arista Scanner installed in: ~/arista-scanner${NC}"
 echo -e "\n${YELLOW}Quick Start:${NC}"
-echo -e "  ${WHITE}arista --menu${NC}        ${BLUE}# Interactive menu${NC}"
-echo -e "  ${WHITE}arista --cidr 104.16.0.0/16 --count 100${NC}    ${BLUE}# Scan CIDR range${NC}"
+echo -e "  ${WHITE}arista${NC}        ${BLUE}# Run scanner with menu${NC}"
+echo -e "  ${WHITE}arista --range 1 --count 100${NC}    ${BLUE}# Scan specific range${NC}"
 echo -e "  ${WHITE}arista --help${NC}        ${BLUE}# Show all options${NC}"
