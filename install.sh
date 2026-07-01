@@ -1,32 +1,24 @@
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
-WHITE='\033[1;37m'
-NC='\033[0m'
+#!/bin/bash
 
-echo -e "${CYAN}"
+echo -e "\033[0;36m"
 echo "╔══════════════════════════════════════════════════════════╗"
-echo "║                                                          ║"
 echo "║   █████╗ ██████╗ ██╗███████╗████████╗ █████╗             ║"
 echo "║  ██╔══██╗██╔══██╗██║██╔════╝╚══██╔══╝██╔══██╗            ║"
 echo "║  ███████║██████╔╝██║███████╗   ██║   ███████║            ║"
 echo "║  ██╔══██║██╔══██╗██║╚════██║   ██║   ██╔══██║            ║"
 echo "║  ██║  ██║██║  ██║██║███████║   ██║   ██║  ██║            ║"
 echo "║  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝            ║"
-echo "║                                                          ║"
 echo "║           Arista Scanner - Termux Installer              ║"
 echo "╚══════════════════════════════════════════════════════════╝"
-echo -e "${NC}"
+echo -e "\033[0m"
 
-echo -e "\n${BLUE}[*]${NC} Installing Arista Scanner..."
+echo -e "\n\033[0;34m[*]\033[0m Installing Arista Scanner..."
 
-curl -fsSL https://raw.githubusercontent.com/aristapanell-cell/AristaScanner/main/arista.sh -o ~/arista
+curl -sL https://raw.githubusercontent.com/aristapanell-cell/AristaScanner/main/arista.sh -o ~/arista
 chmod +x ~/arista
 ln -sf ~/arista ~/../usr/bin/arista 2>/dev/null
 
-echo -e "\n${GREEN}✅ Installation Complete!${NC}"
-echo -e "\n${CYAN}📦 Arista Scanner installed${NC}"
-echo -e "\n${YELLOW}Quick Start:${NC}"
-echo -e "  ${WHITE}arista${NC}        ${BLUE}# Run scanner${NC}"
+echo -e "\n\033[0;32m✅ Installation Complete!\033[0m"
+echo -e "\n\033[0;36m📦 Arista Scanner installed\033[0m"
+echo -e "\n\033[1;33mQuick Start:\033[0m"
+echo -e "  \033[1;37marista\033[0m        \033[0;34m# Run scanner\033[0m"
