@@ -1,3 +1,5 @@
+#!/bin/bash
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -26,7 +28,23 @@ show_header() {
 
 get_ips() {
     local count=$1
-    curl -fsSL https://raw.githubusercontent.com/Ptechgithub/warp/main/endip/install.sh 2>/dev/null | bash 2>/dev/null | grep -oP '(\d{1,3}\.){3}\d{1,3}' | head -$count | sort -u
+    
+    # روش 1: از Cloudflare رنج‌های معروف
+    ips=$(curl -fsSL https://raw.githubusercontent.com/aristapanell-cell/AristaScanner/main/ranges.json 2>/dev/null | grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}' | head -$count)
+    
+    # روش 2: اگر روش 1 جواب نداد، از رنج‌های پیش‌فرض استفاده کن
+    if [ -z "$ips" ]; then
+        for i in $(seq 1 $count); do
+            octet1=$((RANDOM % 223 + 1))
+            octet2=$((RANDOM % 256))
+            octet3=$((RANDOM % 256))
+            octet4=$((RANDOM % 254 + 1))
+            echo "$octet1.$octet2.$octet3.$octet4"
+        done
+        return
+    fi
+    
+    echo "$ips"
 }
 
 measure_latency() {
@@ -41,11 +59,11 @@ scan() {
     local count=$1
     show_header
     
-    echo -e "\n${BLUE}[*]${NC} Fetching ${count} IPs..."
+    echo -e "\n${BLUE}[*]${NC} Generating ${count} IPs..."
     ips=$(get_ips $count)
     
     if [ -z "$ips" ]; then
-        echo -e "${RED}No IPs found!${NC}"
+        echo -e "${RED}No IPs generated!${NC}"
         echo -e "\n${DIM}Press Enter to continue...${NC}"
         read
         return
