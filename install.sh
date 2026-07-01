@@ -44,4 +44,4 @@ ln -sf ~/arista-scanner/arista ~/../usr/bin/arista 2>/dev/null || echo "Symlink 
 echo -e "\n${GREEN}✅ Installation Complete!${NC}"
 echo -e "\n${CYAN}📦 Arista Scanner installed in: ~/arista-scanner${NC}"
 echo -e "\n${YELLOW}Quick Start:${NC}"
-echo -e "  ${WHITE}arista${NC}        ${BLUE}# Run scanner with menu${NC}"
+echo -e "  ${WHITE}arista${NC}        ${BLUE}# Run scanner{NC}"
