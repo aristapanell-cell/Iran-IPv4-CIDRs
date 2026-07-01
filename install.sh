@@ -32,7 +32,7 @@ echo -e "\n${BLUE}[*] Installing dependencies...${NC}"
 pkg install -y python python-pip openssl-tool
 
 echo -e "\n${BLUE}[*] Installing Python packages...${NC}"
-pip install aiohttp
+pip install aiohttp 2>/dev/null || echo "aiohttp already installed"
 
 echo -e "\n${BLUE}[*] Downloading project...${NC}"
 cd ~
@@ -48,5 +48,5 @@ echo -e "\n${GREEN}✅ Installation Complete!${NC}"
 echo -e "\n${CYAN}📦 Arista Scanner installed in: ~/arista-scanner${NC}"
 echo -e "\n${YELLOW}Quick Start:${NC}"
 echo -e "  ${WHITE}arista${NC}        ${BLUE}# Run scanner with menu${NC}"
-echo -e "  ${WHITE}arista --range 1 --count 100${NC}    ${BLUE}# Scan specific range${NC}"
+echo -e "  ${WHITE}arista --cloudflare --count 200${NC}    ${BLUE}# Scan Cloudflare IPs${NC}"
 echo -e "  ${WHITE}arista --help${NC}        ${BLUE}# Show all options${NC}"
