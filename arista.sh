@@ -30,24 +30,34 @@ get_ips() {
     local count=$1
     local ips=""
     
-    ips=$(curl -fsSL https://raw.githubusercontent.com/Ptechgithub/warp/main/endip/install.sh 2>/dev/null | bash 2>/dev/null | grep -oP '(\d{1,3}\.){3}\d{1,3}' | head -$count | sort -u)
+    ips=$(curl -sL --max-time 5 https://raw.githubusercontent.com/Ptechgithub/warp/main/endip/install.sh 2>/dev/null | bash 2>/dev/null | grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}' | head -$count | sort -u)
     
     if [ -z "$ips" ]; then
-        ips=$(curl -fsSL https://raw.githubusercontent.com/v2rayA/v2rayA/main/ip.txt 2>/dev/null | grep -oP '(\d{1,3}\.){3}\d{1,3}' | head -$count | sort -u)
+        ips=$(curl -sL --max-time 5 https://raw.githubusercontent.com/v2rayA/v2rayA/main/ip.txt 2>/dev/null | grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}' | head -$count | sort -u)
     fi
     
     if [ -z "$ips" ]; then
-        ips=$(curl -fsSL https://raw.githubusercontent.com/alanhg/CloudflareSpeedTest/master/ip.txt 2>/dev/null | grep -oP '(\d{1,3}\.){3}\d{1,3}' | head -$count | sort -u)
+        ips=$(curl -sL --max-time 5 https://raw.githubusercontent.com/alanhg/CloudflareSpeedTest/master/ip.txt 2>/dev/null | grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}' | head -$count | sort -u)
     fi
     
     if [ -z "$ips" ]; then
-        for i in $(seq 1 10); do
-            echo "104.16.$((RANDOM % 255)).$((RANDOM % 255))"
-        done
-        return
+        ips=$(curl -sL --max-time 5 https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ip.txt 2>/dev/null | grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}' | head -$count | sort -u)
     fi
     
-    echo "$ips"
+    if [ -z "$ips" ]; then
+        ips="104.16.0.1
+104.16.0.2
+104.16.0.3
+104.16.0.4
+104.16.0.5
+104.16.0.6
+104.16.0.7
+104.16.0.8
+104.16.0.9
+104.16.0.10"
+    fi
+    
+    echo "$ips" | head -$count
 }
 
 measure_latency() {
