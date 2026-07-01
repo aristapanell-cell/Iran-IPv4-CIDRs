@@ -36,7 +36,6 @@ read -r user_input
 if [ "$user_input" -eq 1 ]; then
     echo -e "\n${GOLD}═══${NC} ${WHITE}[${GREEN}+${WHITE}]${NC} ${CYAN}Scanning IPv4 addresses...${NC} ${GOLD}═══${NC}"
     
-    # دریافت لیست آیپی‌ها
     temp_file=$(mktemp)
     echo "1" | bash <(curl -fsSL https://raw.githubusercontent.com/Ptechgithub/warp/main/endip/install.sh) 2>/dev/null | grep -oP '(\d{1,3}\.){3}\d{1,3}:\d+' > "$temp_file"
     
@@ -45,19 +44,23 @@ if [ "$user_input" -eq 1 ]; then
     if [ ! -s "$temp_file" ]; then
         echo -e "\n${GOLD}═══${NC} ${WHITE}[${RED}!${WHITE}]${NC} ${RED}No IPv4 addresses found!${NC} ${GOLD}═══${NC}"
     else
-        echo -e "\n${WHITE}TOP 20 IPv4 ADDRESSES${NC}"
-        echo -e "${BLUE}────────────────────────────────────────${NC}"
+        # جدول اول - IP:PORT
+        echo -e "\n${RED}╔════════════════════════════════════════════════════════════════════╗${NC}"
+        echo -e "${RED}║${NC}     ${WHITE}🌟 TOP 10 IPv4 ADDRESSES (IP:PORT)${NC}                          ${RED}║${NC}"
+        echo -e "${RED}╠════════════════════════════════════════════════════════════════════╣${NC}"
+        echo -e "${RED}║${NC}  ${CYAN}#${NC}  ${CYAN}IP:PORT${NC}                                   ${CYAN}LATENCY${NC}    ${CYAN}STATUS${NC}       ${RED}║${NC}"
+        echo -e "${RED}╠════════════════════════════════════════════════════════════════════╣${NC}"
         
+        colors=("${GREEN}" "${CYAN}" "${YELLOW}" "${PURPLE}" "${BLUE}" "${GOLD}" "${WHITE}" "${GREEN}" "${CYAN}" "${YELLOW}")
         count=0
+        
         while IFS= read -r ip_port; do
             count=$((count+1))
-            if [ $count -gt 20 ]; then
+            if [ $count -gt 10 ]; then
                 break
             fi
             
             ip=$(echo "$ip_port" | cut -d: -f1)
-            
-            # پینگ با timeout کمتر
             latency=$(ping -c 1 -W 1 $ip 2>/dev/null | grep 'time=' | head -1 | sed 's/.*time=//' | cut -d' ' -f1)
             
             if [ -z "$latency" ]; then
@@ -71,13 +74,47 @@ if [ "$user_input" -eq 1 ]; then
                 status="${RED}SLOW${NC}"
             fi
             
-            # نمایش با echo ساده به جای printf
-            echo -e "  $count.  $ip_port  ${CYAN}$latency${NC}  $status"
+            color="${colors[$((count-1))]}"
+            printf "${RED}║${NC}  ${color}%02d${NC}  %-37s  ${CYAN}%-6s${NC}  %-6s  ${RED}║${NC}\n" "$count" "$ip_port" "$latency" "$status"
             
         done < "$temp_file"
         
-        echo -e "${BLUE}────────────────────────────────────────${NC}"
-        echo -e "${WHITE}Total: $count IP addresses found${NC}"
+        echo -e "${RED}╚════════════════════════════════════════════════════════════════════╝${NC}"
+        
+        # جدول دوم - IP ONLY
+        echo -e "\n${RED}╔════════════════════════════════════════════════════════════════════╗${NC}"
+        echo -e "${RED}║${NC}     ${WHITE}🌟 TOP 10 IPv4 ADDRESSES (IP ONLY)${NC}                           ${RED}║${NC}"
+        echo -e "${RED}╠════════════════════════════════════════════════════════════════════╣${NC}"
+        echo -e "${RED}║${NC}  ${CYAN}#${NC}  ${CYAN}IP ADDRESS${NC}                              ${CYAN}LATENCY${NC}    ${CYAN}STATUS${NC}       ${RED}║${NC}"
+        echo -e "${RED}╠════════════════════════════════════════════════════════════════════╣${NC}"
+        
+        count=0
+        while IFS= read -r ip_port; do
+            count=$((count+1))
+            if [ $count -gt 10 ]; then
+                break
+            fi
+            
+            ip=$(echo "$ip_port" | cut -d: -f1)
+            latency=$(ping -c 1 -W 1 $ip 2>/dev/null | grep 'time=' | head -1 | sed 's/.*time=//' | cut -d' ' -f1)
+            
+            if [ -z "$latency" ]; then
+                latency="N/A"
+                status="${RED}DOWN${NC}"
+            elif [ "$(echo "$latency < 100" | bc 2>/dev/null)" = "1" ]; then
+                status="${GREEN}FAST${NC}"
+            elif [ "$(echo "$latency < 200" | bc 2>/dev/null)" = "1" ]; then
+                status="${YELLOW}GOOD${NC}"
+            else
+                status="${RED}SLOW${NC}"
+            fi
+            
+            color="${colors[$((count-1))]}"
+            printf "${RED}║${NC}  ${color}%02d${NC}  %-29s  ${CYAN}%-6s${NC}  %-6s  ${RED}║${NC}\n" "$count" "$ip" "$latency" "$status"
+            
+        done < "$temp_file"
+        
+        echo -e "${RED}╚════════════════════════════════════════════════════════════════════╝${NC}"
     fi
     
     rm -f "$temp_file"
@@ -88,7 +125,6 @@ if [ "$user_input" -eq 1 ]; then
 elif [ "$user_input" -eq 2 ]; then
     echo -e "\n${GOLD}═══${NC} ${WHITE}[${GREEN}+${WHITE}]${NC} ${CYAN}Scanning IPv6 addresses...${NC} ${GOLD}═══${NC}"
     
-    # دریافت لیست آیپی‌ها
     temp_file=$(mktemp)
     echo "2" | bash <(curl -fsSL https://raw.githubusercontent.com/Ptechgithub/warp/main/endip/install.sh) 2>/dev/null | grep -oP '(\[?[a-fA-F\d:]+\]?\:\d+)' > "$temp_file"
     
@@ -97,13 +133,19 @@ elif [ "$user_input" -eq 2 ]; then
     if [ ! -s "$temp_file" ]; then
         echo -e "\n${GOLD}═══${NC} ${WHITE}[${RED}!${WHITE}]${NC} ${RED}No IPv6 addresses found!${NC} ${GOLD}═══${NC}"
     else
-        echo -e "\n${WHITE}TOP 20 IPv6 ADDRESSES${NC}"
-        echo -e "${BLUE}─────────────────────────────────────────────────────${NC}"
+        # جدول اول - IP:PORT
+        echo -e "\n${RED}╔════════════════════════════════════════════════════════════════════════════════════╗${NC}"
+        echo -e "${RED}║${NC}     ${WHITE}🌟 TOP 10 IPv6 ADDRESSES (IP:PORT)${NC}                                          ${RED}║${NC}"
+        echo -e "${RED}╠════════════════════════════════════════════════════════════════════════════════════╣${NC}"
+        echo -e "${RED}║${NC}  ${CYAN}#${NC}  ${CYAN}IP:PORT${NC}                                                            ${CYAN}LATENCY${NC}    ${CYAN}STATUS${NC}  ${RED}║${NC}"
+        echo -e "${RED}╠════════════════════════════════════════════════════════════════════════════════════╣${NC}"
         
+        colors=("${GREEN}" "${CYAN}" "${YELLOW}" "${PURPLE}" "${BLUE}" "${GOLD}" "${WHITE}" "${GREEN}" "${CYAN}" "${YELLOW}")
         count=0
+        
         while IFS= read -r ip_port; do
             count=$((count+1))
-            if [ $count -gt 20 ]; then
+            if [ $count -gt 10 ]; then
                 break
             fi
             
@@ -112,7 +154,6 @@ elif [ "$user_input" -eq 2 ]; then
                 ip=$(echo "$ip_port" | cut -d: -f1)
             fi
             
-            # پینگ با timeout کمتر
             latency=$(ping6 -c 1 -W 1 $ip 2>/dev/null | grep 'time=' | head -1 | sed 's/.*time=//' | cut -d' ' -f1)
             
             if [ -z "$latency" ]; then
@@ -126,13 +167,51 @@ elif [ "$user_input" -eq 2 ]; then
                 status="${RED}SLOW${NC}"
             fi
             
-            # نمایش با echo ساده
-            echo -e "  $count.  $ip_port  ${CYAN}$latency${NC}  $status"
+            color="${colors[$((count-1))]}"
+            printf "${RED}║${NC}  ${color}%02d${NC}  %-59s  ${CYAN}%-6s${NC}  %-6s  ${RED}║${NC}\n" "$count" "$ip_port" "$latency" "$status"
             
         done < "$temp_file"
         
-        echo -e "${BLUE}─────────────────────────────────────────────────────${NC}"
-        echo -e "${WHITE}Total: $count IP addresses found${NC}"
+        echo -e "${RED}╚════════════════════════════════════════════════════════════════════════════════════╝${NC}"
+        
+        # جدول دوم - IP ONLY
+        echo -e "\n${RED}╔════════════════════════════════════════════════════════════════════════════════════╗${NC}"
+        echo -e "${RED}║${NC}     ${WHITE}🌟 TOP 10 IPv6 ADDRESSES (IP ONLY)${NC}                                           ${RED}║${NC}"
+        echo -e "${RED}╠════════════════════════════════════════════════════════════════════════════════════╣${NC}"
+        echo -e "${RED}║${NC}  ${CYAN}#${NC}  ${CYAN}IP ADDRESS${NC}                                                       ${CYAN}LATENCY${NC}    ${CYAN}STATUS${NC}  ${RED}║${NC}"
+        echo -e "${RED}╠════════════════════════════════════════════════════════════════════════════════════╣${NC}"
+        
+        count=0
+        while IFS= read -r ip_port; do
+            count=$((count+1))
+            if [ $count -gt 10 ]; then
+                break
+            fi
+            
+            ip=$(echo "$ip_port" | cut -d'[' -f2 | cut -d']' -f1)
+            if [ -z "$ip" ]; then
+                ip=$(echo "$ip_port" | cut -d: -f1)
+            fi
+            
+            latency=$(ping6 -c 1 -W 1 $ip 2>/dev/null | grep 'time=' | head -1 | sed 's/.*time=//' | cut -d' ' -f1)
+            
+            if [ -z "$latency" ]; then
+                latency="N/A"
+                status="${RED}DOWN${NC}"
+            elif [ "$(echo "$latency < 100" | bc 2>/dev/null)" = "1" ]; then
+                status="${GREEN}FAST${NC}"
+            elif [ "$(echo "$latency < 200" | bc 2>/dev/null)" = "1" ]; then
+                status="${YELLOW}GOOD${NC}"
+            else
+                status="${RED}SLOW${NC}"
+            fi
+            
+            color="${colors[$((count-1))]}"
+            printf "${RED}║${NC}  ${color}%02d${NC}  %-51s  ${CYAN}%-6s${NC}  %-6s  ${RED}║${NC}\n" "$count" "$ip" "$latency" "$status"
+            
+        done < "$temp_file"
+        
+        echo -e "${RED}╚════════════════════════════════════════════════════════════════════════════════════╝${NC}"
     fi
     
     rm -f "$temp_file"
