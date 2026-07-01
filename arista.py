@@ -4,6 +4,7 @@ import subprocess
 import re
 import sys
 import time
+import socket
 from typing import List, Tuple, Optional
 
 class Colors:
@@ -20,23 +21,18 @@ class Colors:
 
 class AristaScanner:
     def __init__(self):
-        self.results = []
         self.ports = [443, 8443, 2053, 2096, 2087, 2083, 8880]
 
-    def get_ips_from_source(self) -> List[str]:
+    def get_ips(self) -> List[str]:
         try:
             cmd = "bash <(curl -fsSL https://raw.githubusercontent.com/Ptechgithub/warp/main/endip/install.sh) 2>/dev/null"
             result = subprocess.run(['bash', '-c', cmd], capture_output=True, text=True, timeout=30)
             ips = re.findall(r'(\d{1,3}\.){3}\d{1,3}', result.stdout)
-            unique_ips = []
-            for ip in ips:
-                if ip not in unique_ips:
-                    unique_ips.append(ip)
-            return unique_ips[:50]
+            return list(dict.fromkeys(ips))[:50]
         except:
-            return self.generate_fallback_ips()
+            return self.fallback_ips()
 
-    def generate_fallback_ips(self) -> List[str]:
+    def fallback_ips(self) -> List[str]:
         ips = []
         ranges = ['104.16.0.0/12', '104.24.0.0/13', '141.101.0.0/16']
         import random, ipaddress
@@ -52,12 +48,11 @@ class AristaScanner:
                 pass
         return ips[:30]
 
-    def measure_latency(self, ip: str, port: int) -> Tuple[str, Optional[float]]:
+    def ping_ip(self, ip: str, port: int) -> Tuple[str, Optional[float]]:
         try:
-            import socket
             start = time.time()
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(1.5)
+            sock.settimeout(1.0)
             result = sock.connect_ex((ip, port))
             sock.close()
             if result == 0:
@@ -67,29 +62,29 @@ class AristaScanner:
             pass
         return (f"{ip}:{port}", None)
 
-    def scan(self):
+    def scan(self, count: int = 50):
         print(f"\n{Colors.CYAN}╔═══════════════════════════════════════════════╗")
         print(f"║         Arista Scanner - IP Scanner           ║")
         print(f"╚═══════════════════════════════════════════════╝{Colors.RESET}")
         
         print(f"\n{Colors.BLUE}[*]{Colors.RESET} Fetching IPs...")
-        ips = self.get_ips_from_source()
+        ips = self.get_ips()[:count]
         if not ips:
             print(f"{Colors.RED}No IPs found!{Colors.RESET}")
             return
         
+        total = len(ips) * len(self.ports)
         print(f"{Colors.BLUE}[*]{Colors.RESET} Testing {len(ips)} IPs on {len(self.ports)} ports...\n")
         
         results = []
-        total = len(ips) * len(self.ports)
-        count = 0
+        tested = 0
         
         for ip in ips:
             for port in self.ports:
-                count += 1
-                sys.stdout.write(f"\r{Colors.BLUE}[{count}/{total}]{Colors.RESET} Testing: {ip}:{port}     ")
+                tested += 1
+                sys.stdout.write(f"\r{Colors.BLUE}[{tested}/{total}]{Colors.RESET} Testing: {ip}:{port}     ")
                 sys.stdout.flush()
-                ip_port, latency = self.measure_latency(ip, port)
+                ip_port, latency = self.ping_ip(ip, port)
                 if latency is not None:
                     results.append((ip_port, latency))
                 time.sleep(0.02)
@@ -117,7 +112,10 @@ def main():
         print(f"\n{Colors.CYAN}╔═══════════════════════════════════════════════╗")
         print(f"║          Arista Scanner - Main Menu            ║")
         print(f"╚═══════════════════════════════════════════════╝{Colors.RESET}")
-        print(f"\n{Colors.GREEN}1.{Colors.RESET} Scan IPs {Colors.DIM}(Recommended){Colors.RESET}")
+        print(f"\n{Colors.GREEN}1.{Colors.RESET} Scan IPs {Colors.DIM}(50 IPs){Colors.RESET}")
+        print(f"{Colors.GREEN}2.{Colors.RESET} Scan IPs {Colors.DIM}(100 IPs){Colors.RESET}")
+        print(f"{Colors.GREEN}3.{Colors.RESET} Scan IPs {Colors.DIM}(200 IPs){Colors.RESET}")
+        print(f"{Colors.GREEN}4.{Colors.RESET} Custom Count")
         print(f"\n{Colors.RED}0.{Colors.RESET} Exit")
         print()
         
@@ -127,7 +125,20 @@ def main():
             print(f"\n{Colors.GREEN}Goodbye!{Colors.RESET}")
             break
         elif choice == "1":
-            scanner.scan()
+            scanner.scan(50)
+        elif choice == "2":
+            scanner.scan(100)
+        elif choice == "3":
+            scanner.scan(200)
+        elif choice == "4":
+            try:
+                count = int(input(f"{Colors.BLUE}Enter number of IPs: {Colors.RESET}"))
+                if count > 0:
+                    scanner.scan(count)
+                else:
+                    print(f"{Colors.RED}Must be positive!{Colors.RESET}")
+            except:
+                print(f"{Colors.RED}Invalid number!{Colors.RESET}")
         else:
             print(f"{Colors.RED}Invalid choice!{Colors.RESET}")
 
