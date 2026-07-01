@@ -15,7 +15,7 @@ NC='\033[0m'
 echo -e "${CYAN}╔════════════════════════════════════════════════════════════════════════════╗${NC}"
 echo -e "${CYAN}║${NC}                                                                            ${CYAN}║${NC}"
 echo -e "${CYAN}║${NC}                                                                            ${CYAN}║${NC}"
-echo -e "${CYAN}║${NC}              ${BLUE} Ariata Scanner ${NC}                                            ${CYAN}║${NC}"
+echo -e "${CYAN}║${NC}              ${BLUE} Ariata Scanner ${NC}                                  ${CYAN}║${NC}"
 echo -e "${CYAN}║${NC}                                                                            ${CYAN}║${NC}"
 echo -e "${CYAN}║${NC}                                                                            ${CYAN}║${NC}"
 echo -e "${CYAN}║${NC}         ${WHITE}GitHub:${NC} ${BLUE}https://github.com/aristapanell-cell/AristaScanner${NC}         ${CYAN}║${NC}"
