@@ -4,6 +4,7 @@ import requests
 from random import SystemRandom
 
 URLS = [
+    "https://github.com/ipverse/country-ip-blocks/raw/refs/heads/master/country/ir/ipv4-aggregated.txt",
     "https://scansearch.net/en/resources/ip-ranges/ir/",
     "https://scanitex.com/en/resources/ip-ranges/ir",
     "https://www.cloudflare.com/ips",
